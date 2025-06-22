@@ -277,3 +277,122 @@ if (aboutSection) {
 
   statsObserver.observe(aboutSection)
 }
+
+// Gallery filtering functionality
+const galleryCategories = document.querySelectorAll(".category-btn")
+const galleryItems = document.querySelectorAll(".gallery-item")
+
+galleryCategories.forEach((btn) => {
+  btn.addEventListener("click", () => {
+    const category = btn.getAttribute("data-category")
+
+    // Update active category button
+    galleryCategories.forEach((b) => b.classList.remove("active"))
+    btn.classList.add("active")
+
+    // Filter gallery items
+    galleryItems.forEach((item) => {
+      const itemCategory = item.getAttribute("data-category")
+
+      if (category === "all" || itemCategory === category) {
+        item.classList.remove("hidden")
+        setTimeout(() => {
+          item.style.opacity = "1"
+          item.style.transform = "translateY(0)"
+        }, 100)
+      } else {
+        item.style.opacity = "0"
+        item.style.transform = "translateY(20px)"
+        setTimeout(() => {
+          item.classList.add("hidden")
+        }, 300)
+      }
+    })
+  })
+})
+
+// Gallery view button functionality
+const galleryViewBtns = document.querySelectorAll(".gallery-view-btn")
+galleryViewBtns.forEach((btn) => {
+  btn.addEventListener("click", (e) => {
+    e.stopPropagation()
+    const galleryItem = btn.closest(".gallery-item")
+    const title = galleryItem.querySelector("h3").textContent
+
+    // This would typically open a lightbox or modal
+    console.log(`Opening gallery view for: ${title}`)
+    alert(`Opening detailed view for: ${title}`)
+  })
+})
+
+// Load more functionality
+const loadMoreBtn = document.querySelector(".load-more-btn")
+if (loadMoreBtn) {
+  loadMoreBtn.addEventListener("click", () => {
+    // Simulate loading more gallery items
+    loadMoreBtn.textContent = "Loading..."
+    loadMoreBtn.disabled = true
+
+    setTimeout(() => {
+      alert("More projects loaded! (This would load additional gallery items)")
+      loadMoreBtn.textContent = "Load More Projects"
+      loadMoreBtn.disabled = false
+    }, 1500)
+  })
+}
+
+// Partner card hover effects
+const partnerCards = document.querySelectorAll(".partner-card")
+partnerCards.forEach((card) => {
+  card.addEventListener("mouseenter", () => {
+    card.style.transform = "translateY(-5px) scale(1.02)"
+  })
+
+  card.addEventListener("mouseleave", () => {
+    card.style.transform = "translateY(0) scale(1)"
+  })
+})
+
+// Update navigation highlighting to include gallery
+const sections = document.querySelectorAll("section[id]")
+const navLinksUpdated = document.querySelectorAll(".nav-link")
+
+window.addEventListener("scroll", () => {
+  const scrollPos = window.scrollY + 100
+
+  sections.forEach((section) => {
+    const sectionTop = section.offsetTop
+    const sectionHeight = section.offsetHeight
+    const sectionId = section.getAttribute("id")
+
+    if (scrollPos >= sectionTop && scrollPos < sectionTop + sectionHeight) {
+      navLinksUpdated.forEach((link) => {
+        link.classList.remove("active")
+        if (link.getAttribute("href") === `#${sectionId}`) {
+          link.classList.add("active")
+        }
+      })
+    }
+  })
+})
+
+// Animate gallery items on scroll
+const galleryObserver = new IntersectionObserver(
+  (entries) => {
+    entries.forEach((entry) => {
+      if (entry.isIntersecting) {
+        entry.target.style.opacity = "1"
+        entry.target.style.transform = "translateY(0)"
+      }
+    })
+  },
+  {
+    threshold: 0.1,
+    rootMargin: "0px 0px -50px 0px",
+  },
+)
+
+// Observe gallery items and partner cards for animation
+document.querySelectorAll(".gallery-item, .partner-card, .benefit-item").forEach((el) => {
+  galleryObserver.observe(el)
+})
